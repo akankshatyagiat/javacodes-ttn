@@ -52,12 +52,9 @@ class Course
 
     @Override
     public String toString() {
-        return "Course{" +
-                "name='" + name + '\'' +
-                ", category='" + category + '\'' +
-                ", reviewScore=" + reviewScore +
-                ", noOfStudents=" + noOfStudents +
-                "}\n";
+        return name+
+                ":"+ reviewScore +
+                ":"+ noOfStudents+"\n";
     }
 }
 public class CustomFunctional {
@@ -72,15 +69,15 @@ public class CustomFunctional {
                 new Course("Docker","Cloud",91,6000)
         );
         //all match noneMatch  anyMatch
-        /*Predicate<Course> getCoursePredicateGreaterThan90=
-                course -> course.getReviewScore() > 90;
+        Predicate<Course> getCoursePredicateGreaterThan95=
+                course -> course.getReviewScore() > 95;
         Predicate<Course> getCoursePredicateLessThan95=
                 course -> course.getReviewScore() < 95;
         Predicate<Course> getCoursePredicateAnyLessThan92=
                 course -> course.getReviewScore() < 92;
-
-        System.out.println("all match(greater than 90): "+listCourse.stream()
-                .allMatch(getCoursePredicateGreaterThan90));
+        /*
+        System.out.println("all match(greater than 95): "+listCourse.stream()
+                .allMatch(getCoursePredicateGreaterThan95));
         //if no element matches the condition, return true else false
         System.out.println("none match(less than 95): "+listCourse.stream()
                 .noneMatch(getCoursePredicateLessThan95));
@@ -97,8 +94,8 @@ public class CustomFunctional {
 
         Comparator<Course> comparingDecreasingStudents=Comparator
                 .comparing(Course::getNoOfStudents).reversed();
-        System.out.println("Reversed Order:\n"+listCourse.stream()
-               .sorted(comparingDecreasingStudents).collect(Collectors.toList()));
+        //System.out.println("Reversed Order:\n"+listCourse.stream()
+          //     .sorted(comparingDecreasingStudents).collect(Collectors.toList()));
 
         //custom comparator
         Comparator<Course> comparingCustomStudents=Comparator
@@ -116,12 +113,74 @@ public class CustomFunctional {
                 .limit(5)
                 .collect(Collectors.toList()));
 
-         */
+
 
         System.out.println("Max: \n"+listCourse.stream()
                 .max(comparingDecreasingStudents));
         System.out.println("Min: \n"+listCourse.stream()
                 .min(comparingDecreasingStudents));
 
+
+        // avg, sum and count
+        System.out.println("Sum:: "+
+                listCourse.stream()
+                .filter(getCoursePredicateGreaterThan95)
+                .mapToInt(Course::getNoOfStudents)
+                .sum()  //8050
+        );
+
+        System.out.println("Average:: "+
+                listCourse.stream()
+                        .filter(getCoursePredicateGreaterThan95)
+                        .mapToInt(Course::getNoOfStudents)
+                        .average() //OptionalDouble[2683.3333333333335]
+        );
+
+        System.out.println("count:: "+
+                listCourse.stream()
+                        .filter(getCoursePredicateGreaterThan95)
+                        .mapToInt(Course::getNoOfStudents)
+                        .count()  //3
+        );
+
+        System.out.println("max: "+
+                listCourse.stream()
+                        .filter(getCoursePredicateGreaterThan95)
+                        .mapToInt(Course::getNoOfStudents)
+                        .max() //OptionalInt[5000]
+        );
+
+         */
+
+        //grouping on some criteria
+        System.out.println("Grouping: "+listCourse.stream()
+                .collect(Collectors.groupingBy(Course::getCategory)));
+        //Grouping: {Cloud=[AWS:95:8500
+        //, Azure:98:5000
+        //, Docker:91:6000
+        //], language=[Java:98:1050
+        //], FullStack=[Full Stack:100:2000
+        //], Framework=[Spring:93:2000
+        //, API:93:1800
+        //]}
+
+        System.out.println("Grouping: "+listCourse.stream()
+                .collect(Collectors.groupingBy(Course::getCategory,
+                        Collectors.counting())));
+        //Grouping: {Cloud=3, language=1, FullStack=1, Framework=2}
+
+        System.out.println("group by category, maxBy: reviewScore\n"+
+                listCourse.stream()
+                .collect(Collectors.groupingBy(Course::getCategory,
+                        Collectors.maxBy(Comparator.comparing(
+                                        Course::getReviewScore))))
+        );
+
+        System.out.println("group by category, map as list by name\n"+
+                listCourse.stream()
+                        .collect(Collectors.groupingBy(Course::getCategory,
+                                Collectors.mapping(Course::getName,
+                                        Collectors.toList())))
+        );
     }
 }
