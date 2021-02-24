@@ -1,24 +1,38 @@
 package com.multithread;
-
-class ThreadExtend extends Thread {
-    public void run()
-    {
-        for(int i=0;i<5;i++)
-            System.out.println(i+" hello AkankshaTyagi," +
-                    ", call from Thread id, : "+
-                    Thread.currentThread().getId());
+class ThreadPrintsTyagi extends Thread
+{
+    public void run() {
+        for(int i=0;i<5;i++) {
+            System.out.println("Hi Tyagi!");
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
-public class CreatingThreadsUsingThreadClass {
-    public static void main(String[] arg)
-    {
-        System.out.println("Three threads created:: \n");
-        ThreadExtend thread1=new ThreadExtend();
-        thread1.start();
-        ThreadExtend thread2=new ThreadExtend();
-        thread2.start();
-        ThreadExtend thread3=new ThreadExtend();
-        thread3.start();
+class ThreadPrintsAkanksha extends Thread {
+    public void run() {
+        for(int i=0;i<5;i++) {
+            System.out.println("Hi Akanksha!");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+}
 
+public class CreatingThreadsUsingThreadClass {
+    public static void main(String[] arg) throws InterruptedException {
+        ThreadPrintsTyagi thread2 = new ThreadPrintsTyagi();
+        ThreadPrintsAkanksha thread1 = new ThreadPrintsAkanksha();
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
+        System.out.println("main executed in the last....!!!");
+    }
 }
